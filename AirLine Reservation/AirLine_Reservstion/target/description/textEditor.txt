@@ -1,0 +1,49 @@
+/******************************************************************************
+
+                            Online Java Compiler.
+                Code, Compile, Run and Debug java program online.
+Write your code in this editor and press "Run" button to execute it.
+
+*******************************************************************************/
+import javax.swing.*;
+
+public class Main
+{
+    JFrame frame;
+    JMenuBar menuBar;
+    Jmenu file,edit;
+    JmenuItem newFile,openFile,saveFile;
+    JmenuItem cut,copy,paste,selectAll,close;
+    Main(){
+        frame =new JFrame();
+        menuBar=new JMenuBar();
+        file=new JMenu("File");
+        edit=new JMenu("Edit");
+        newFile=new JMenuItem("New Window");
+        openFile=new JMenuItem("Open File");
+        saveFille=new JMenuItem("Save File");
+        file.add(newFile);
+        file.add(openFile);
+        fill.add(saveFile);
+        cut= new JMenu("Cut");
+        copy= new JMenu("Copy");
+        paste= new JMenu("Paste");
+        selectAll= new JMenu("Select All");
+        close= new JMenu("Close");
+        edit.add(cut);
+        edit.add(copy);
+        edit.add(paste);
+        edit.add(selectAll);
+        edit.add(close);
+        menuBar.add(file);
+        menuBar.add(edit);
+        frame.setJMenuBar(menuBar);
+        frame.setBounds(0,0,400,400);
+        frame.setVisible(true);
+        frame.setLayout(null);
+        
+    }
+	public static void main(String[] args) {
+	Main obj=new Main();
+	}
+}

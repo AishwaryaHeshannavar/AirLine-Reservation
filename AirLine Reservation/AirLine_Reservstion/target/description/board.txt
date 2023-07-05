@@ -1,0 +1,61 @@
+import javax.swing.*;
+import java.awt.*;
+
+public class Board extends JPanel{
+    int B_HEIGHT=400;
+    int B_WIDTH=400;
+    int MAX_DOTS=1600;
+    int DOT_SIZE=10;
+    int DOTS;
+    int x[]=new int[MAX_DOTS];
+    int y[]=new int[MAX_DOTS];
+    int apple_x;
+    int apple_y;
+    Image body,head,apple;
+    Board(){
+        setPreferredSize(new Dimension(B_WIDTH,B_HEIGHT));
+        setBackground(Color.black);
+        initGame();
+        loadImages();
+    }
+    //Initialize game
+    public void initGame(){
+        DOTS=3;
+        x[0]=50;
+        y[0]=50;
+        //Initialize Snake's positions
+        for(int i=1;i<DOTS;i++){
+            x[i]=x[0]+DOT_SIZE*i;
+            y[i]=y[0];
+        }
+        //Initialize Apple's positions
+        apple_x=150;
+        apple_y=150;
+
+    }
+    public void loadImages(){
+        ImageIcon bodyIcon=new ImageIcon("src/resources/dot.png");
+        body=bodyIcon.getImage();
+        ImageIcon headIcon=new ImageIcon("src/resources/head.png");
+        head=headIcon.getImage();
+        ImageIcon appleIcon=new ImageIcon("src/resources/apple.png");
+        apple=appleIcon.getImage();
+    }
+    //draw images ar snakes and apples position
+    public void paintComponent(Graphics g){
+        super.paintComponent(g);
+        doDrawing(g);
+    }
+    //Draw Image
+    public void doDrawing(Graphics g){
+        g.drawImage(apple,apple_x,apple_y,this);
+        for(int i=0;i<DOTS;i++){
+            if(i==0){
+                g.drawImage(head,x[0].y[0],this);
+            }else{
+                g.drawImage(body,x[i],y[i],this);
+            }
+        }
+    }
+
+}

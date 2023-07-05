@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>E-commerce</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<!--[if ie]><meta content='IE=8' http-equiv='X-UA-Compatible'/><![endif]-->
+		<!-- bootstrap -->
+		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">      
+		<link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+		
+		<link href="themes/css/bootstrappage.css" rel="stylesheet"/>
+		
+		<!-- global styles -->
+		<link href="themes/css/flexslider.css" rel="stylesheet"/>
+		<link href="themes/css/main.css" rel="stylesheet"/>
+
+		<!-- scripts -->
+		<script src="themes/js/jquery-1.7.2.min.js"></script>
+		<script src="bootstrap/js/bootstrap.min.js"></script>				
+		<script src="themes/js/superfish.js"></script>	
+		<script src="themes/js/jquery.scrolltotop.js"></script>
+		<!--[if lt IE 9]>			
+			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+			<script src="js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+    <body>		
+        <?php
+            session_start();
+            if($_SESSION['id']==""){
+                header("location:index.php");
+            }
+            
+        include 'dbconnection.php';
+        $result= mysql_query("select * from tbl where ip='{$_SERVER['REMOTE_ADDR']}'");
+        if(isset($_SESSION['id'])){
+            echo "Welcome : ".$_SESSION['id'];
+        }
+        ?>
+		<div id="top-bar" class="container">
+			<div class="row">
+				<div class="span4">
+					<form method="POST" class="search_form">
+						<!--<input type="text" class="input-block-level search-query" Placeholder="eg. T-sirt">-->
+					</form>
+				</div>
+				<div class="span8">
+					<div class="account pull-right">
+						<ul class="user-menu">				
+							<li><a href="logout.php">Logout</a></li>		
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="wrapper" class="container">
+			<section class="navbar main-menu">
+				<div class="navbar-inner main-menu">				
+					<a href="index.php" class="logo pull-left"><img src="themes/images/logo.png" class="site_logo" alt=""></a>
+					<nav id="menu" class="pull-right">
+						<ul>
+							<li><a href="addprod.php">Add Products</a></li>															
+							<li><a href="viewprod.php">View Products</a></li>			
+						</ul>
+					</nav>
+				</div>
+			</section>	
+			<section class="header_text sub">
+                            <img class="pageBanner" src="themes/images/pageBanner.png" alt="New products" >
+				<h4><span>Add Product</span></h4>
+			</section>
+			<section class="main-content">
+                            <center><form action="" name="f" method="post" class="form-stacked" enctype="multipart/form-data">
+							<fieldset>
+								<div class="control-group">
+									<label class="control-label">Medicine Name</label>
+									<div class="controls">
+										<input type="text" placeholder="Enter Medicene Name" name="name" class="input-xlarge" required>
+									</div>
+								</div>
+                                                                <div class="control-group">
+									<label class="control-label">Medicine Type</label>
+									<div class="controls">
+										<Select name="type" class="input-xlarge">
+                                                                                    <option>BP</option>
+                                                                                    <option>Sugar</option>
+                                                                                    <option>General</option>
+                                                                                </select>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">Manufacture Date</label>
+									<div class="controls">
+                                                                            <input type="text" placeholder="MMM YYYY" pattern="[A-Za-z/ /0-9]+" name="brand" class="input-xlarge" required>
+									</div>
+								</div>
+                                                            <div class="control-group">
+									<label class="control-label">Expiry Date</label>
+									<div class="controls">
+										<input type="text" placeholder="MMM YYYY" pattern="[A-Za-z/ /0-9]+" name="model" class="input-xlarge" required>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">Price</label>
+									<div class="controls">
+                                                                            <input type="text" pattern="[0-9]+" placeholder="Enter Price" name="price" class="input-xlarge" required>
+									</div>
+								</div>
+                                                                <div class="control-group">
+									<label class="control-label">Description/Specification</label>
+									<div class="controls">
+                                                                            <textarea placeholder="Product Description" name="description" class="input-xlarge" required></textarea>
+									</div>
+								</div>
+                                                                <div class="control-group">
+									<label class="control-label">Select Image</label>
+									<div class="controls">
+                                                                            <input type="file" placeholder="Select Image" name="fileToUpload" class="input-xlarge" required />
+									</div>
+								</div>
+								<hr>
+								<div class="actions"><input tabindex="9" name="reg" class="btn btn-inverse large" type="submit" name="upload" value="Add Medicine"></div>
+							</fieldset>
+						</form></center>
+<?php
+include 'dbconnection.php';
+if(isset($_REQUEST['reg'])){
+    
+            $result=mysql_query("insert into tblproducts(name,type,brand,model,price,description,username) values('{$_POST['name']}','{$_POST['type']}','{$_POST['brand']}','{$_POST['model']}','{$_POST['price']}','{$_POST['description']}','{$_SESSION['id']}')") or die(mysql_error());
+            $result=mysql_query("select max(id) as id from tblproducts where username='{$_SESSION['id']}'") or die(mysql_error());
+            $id=mysql_result($result, 0,"id");
+            $target_dir = "images/";
+            $name=basename($_FILES["fileToUpload"]["name"]);
+            $target_file = $target_dir. $id .$name; 
+            $uploadOk = 1;
+            $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+            // Check if image file is a actual image or fake image
+            if(isset($_POST["submit"])){
+                $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+                if($check !== false) {
+                    echo "File is an image - " . $check["mime"] . ".";
+                    $uploadOk = 1;
+                } else {
+                    echo "File is not an image.";
+                    $uploadOk = 0;
+                }
+}
+
+// Check file size
+if ($_FILES["fileToUpload"]["size"] > 50000000) {
+    echo "Sorry, your file is too large.";
+    $uploadOk = 0;
+}
+// Allow certain file formats
+if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+&& $imageFileType != "gif" ) {
+    echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+    $uploadOk = 0;
+}
+// Check if $uploadOk is set to 0 by an error
+if ($uploadOk == 0) {
+    echo "Sorry, your file was not uploaded.";
+// if everything is ok, try to upload file
+} else {
+    
+    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+        echo "<script> alert('Product Added')</script>";
+        //$image_name= $_FILES["fileToUpload"]["name"];
+       // echo $image_name;
+        
+        
+        $query=mysql_query("update tblproducts set filename='$id$name' where id='$id'");
+        
+    } else {
+        echo "Sorry, there was an error uploading your file.";
+    }
+}
+
+                         
+       }
+       ?>
+			</section>
+		<section id="copyright">
+				<span>Copyright 2022 Medicare</span>
+			</section>
+		</div>
+		<script src="themes/js/common.js"></script>
+		<script>
+			$(document).ready(function() {
+				$('#checkout').click(function (e) {
+					document.location.href = "checkout.html";
+				})
+			});
+		</script>		
+    </body>
+</html>
